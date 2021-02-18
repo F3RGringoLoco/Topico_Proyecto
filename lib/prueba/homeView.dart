@@ -4,8 +4,12 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 
-import 'package:servtecnico/prueba/loginPage.dart';
+import 'package:servtecnico/controllers/servSelected.dart';
+import 'package:servtecnico/prueba/setTimeServ.dart';
+import 'package:servtecnico/prueba/inputChips.dart';
 import 'package:servtecnico/controllers/databasehelpers.dart';
+import 'package:servtecnico/controllers/timeServDatabase.dart';
+import 'package:servtecnico/prueba/welcomePage.dart';
 
 class HViewPage extends StatelessWidget {
   @override
@@ -23,23 +27,41 @@ class HomeViewPage extends StatefulWidget {
 
 class _HomeViewPageState extends State<HomeViewPage> {
   DataBaseHelper databaseHelper = new DataBaseHelper();
+  SaveServDatabaseHelper saveServ = new SaveServDatabaseHelper();
+  SaveTimeServDatabaseHelper saveTime = new SaveTimeServDatabaseHelper();
   SharedPreferences sharedPreferences;
   Map<String, dynamic> data;
+  Map<String, dynamic> serv;
+  Map<String, dynamic> schedule;
 
   @override
   void initState() {
     super.initState();
-    this.checkLoginStatus();
+    this.checkInfoStatus();
     this.getJsonData();
   }
 
-  checkLoginStatus() async {
-    sharedPreferences = await SharedPreferences.getInstance();
-    if (sharedPreferences.getString("token") == null) {
+  checkInfoStatus() async {
+    serv = await saveServ.hasService();
+    //print(serv);
+    if (serv['hasServ'] == null) {
       Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
+          MaterialPageRoute(builder: (BuildContext context) => InputChipPage()),
           (Route<dynamic> route) => false);
     }
+    schedule = await saveTime.hasSchedule();
+    //print(schedule);
+    if (schedule['hasSched'] == false) {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (BuildContext context) => TimeServPage()),
+          (Route<dynamic> route) => false);
+    }
+  }
+
+  clearSharedPref() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+    await prefs.commit();
   }
 
   Future<String> getJsonData() async {
@@ -65,19 +87,18 @@ class _HomeViewPageState extends State<HomeViewPage> {
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-                colors: [Colors.black, Colors.purple],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter),
+                colors: [Colors.indigo, Colors.purple],
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight),
           ),
         ),
         actions: <Widget>[
           FlatButton(
             onPressed: () {
-              sharedPreferences.clear();
-              sharedPreferences.commit();
+              clearSharedPref();
               Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(
-                      builder: (BuildContext context) => LoginPage()),
+                      builder: (BuildContext context) => InitPage()),
                   (Route<dynamic> route) => false);
             },
             child: Text("Cerrar Sesion", style: TextStyle(color: Colors.white)),
@@ -134,7 +155,9 @@ class _HomeViewPageState extends State<HomeViewPage> {
                   }),
               currentAccountPicture: FlutterLogo(),
               decoration: BoxDecoration(
-                gradient: LinearGradient(colors: [Colors.black, Colors.purple]),
+                gradient: LinearGradient(
+                  colors: [Colors.indigo, Colors.purple],
+                ),
               ),
             ),
             //

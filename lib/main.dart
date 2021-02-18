@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:servtecnico/prueba/servform.dart';
+import 'package:servtecnico/prueba/setTimeServ.dart';
 import 'package:servtecnico/src/providers/push_notifications_provider.dart';
 
 //import 'package:servtecnico/pages/start.dart';
@@ -9,6 +9,7 @@ import 'package:servtecnico/prueba/homeView.dart';
 import 'package:servtecnico/prueba/welcomePage.dart';
 import 'package:servtecnico/prueba/signup.dart';
 import 'package:servtecnico/prueba/loginPage.dart';
+import 'package:servtecnico/prueba/inputChips.dart';
 
 void main() => runApp(MyApp());
 
@@ -43,14 +44,15 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       //navigatorKey: navigatorKey,
       title: 'Servicio Tecnico',
-      initialRoute: 'loginPage',
+      initialRoute: 'welcome',
       routes: {
         //new
         'welcome': (BuildContext context) => InitPage(),
         'loginPage': (BuildContext context) => LoginPage(),
         'signup': (BuildContext context) => SignUpPage(),
         'homeView': (BuildContext context) => HViewPage(),
-        'servform': (BuildContext context) => FilterChipDisplay(),
+        'serviciosView': (BuildContext context) => InputChipPage(),
+        'setServTime': (BuildContext context) => TimeServPage(),
 
         //Old
         //'start': (BuildContext context) => StartPage(),

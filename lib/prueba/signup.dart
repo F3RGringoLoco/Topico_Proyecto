@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import 'package:servtecnico/prueba/homeView.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:servtecnico/prueba/Widget/bezierContainer.dart';
@@ -43,7 +44,7 @@ class _SignUpPageState extends State<SignUpPage> {
         });
         sharedPreferences.setString("token", jsonResponse['token']);
         Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
+            MaterialPageRoute(builder: (BuildContext context) => HViewPage()),
             (Route<dynamic> route) => false);
       }
     } else {
@@ -215,8 +216,8 @@ class _SignUpPageState extends State<SignUpPage> {
             context, MaterialPageRoute(builder: (context) => LoginPage()));
       },
       child: Container(
-        margin: EdgeInsets.symmetric(vertical: 20),
-        padding: EdgeInsets.all(15),
+        margin: EdgeInsets.symmetric(vertical: 10),
+        padding: EdgeInsets.all(3),
         alignment: Alignment.bottomCenter,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -231,13 +232,6 @@ class _SignUpPageState extends State<SignUpPage> {
             SizedBox(
               width: 3,
             ),
-            /*Text(
-              'Iniciar Sesión',
-              style: TextStyle(
-                  color: Colors.blue,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600),
-            ),*/
           ],
         ),
       ),
@@ -275,7 +269,7 @@ class _SignUpPageState extends State<SignUpPage> {
         child: Stack(
           children: <Widget>[
             Positioned(
-              top: -MediaQuery.of(context).size.height * .15,
+              top: -height * .15,
               right: -MediaQuery.of(context).size.width * .4,
               child: BezierContainer(),
             ),
@@ -288,17 +282,16 @@ class _SignUpPageState extends State<SignUpPage> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          SizedBox(height: height * .2),
+                          SizedBox(height: height * .19),
                           _title(),
                           SizedBox(
-                            height: 50,
+                            height: 10,
                           ),
                           _registerSection(),
                           SizedBox(
-                            height: 20,
+                            height: 10,
                           ),
                           _submitButton(),
-                          SizedBox(height: 3),
                           _loginAccountLabel(),
                         ],
                       ),

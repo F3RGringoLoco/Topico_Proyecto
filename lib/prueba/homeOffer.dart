@@ -42,6 +42,12 @@ class _HomeOfferPageState extends State<HomeOfferPage> {
     }
   }*/
 
+  clearSharedPref() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+    await prefs.commit();
+  }
+
   Future<String> getJsonData() async {
     final prefs = await SharedPreferences.getInstance();
     final key = 'token';
@@ -73,8 +79,7 @@ class _HomeOfferPageState extends State<HomeOfferPage> {
         actions: <Widget>[
           FlatButton(
             onPressed: () {
-              sharedPreferences.clear();
-              sharedPreferences.commit();
+              clearSharedPref();
               Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(
                       builder: (BuildContext context) => LoginPage()),

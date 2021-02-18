@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
-import 'package:servtecnico/prueba/inputChips.dart';
-import 'package:servtecnico/prueba/servform.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:servtecnico/controllers/databasehelpers.dart';
@@ -86,11 +84,11 @@ class _WelcomePageState extends State<WelcomePage> {
     ));
   }
 
-  Widget _serviceButton() {
+  /*Widget _serviceButton() {
     return InkWell(
       onTap: () {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => InputChipPage()));
+            context, MaterialPageRoute(builder: (context) => HViewPage()));
       },
       child: Container(
         width: MediaQuery.of(context).size.width,
@@ -112,13 +110,47 @@ class _WelcomePageState extends State<WelcomePage> {
         ),
       ),
     );
+  }*/
+  Widget _serviceButton() {
+    return Container(
+      height: 50.0,
+      margin: EdgeInsets.all(10),
+      child: RaisedButton(
+        onPressed: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => HViewPage()));
+        },
+        elevation: 30.0,
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(80.0)),
+        padding: EdgeInsets.all(0.0),
+        child: Ink(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.white, Color(0xC71585)],
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+              ),
+              borderRadius: BorderRadius.circular(30.0)),
+          child: Container(
+            constraints: BoxConstraints(maxWidth: 250.0, minHeight: 50.0),
+            alignment: Alignment.center,
+            child: Text(
+              "Ofrecer Servicio",
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.black, fontSize: 20),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
-  Widget _signUpButton() {
+  /*Widget _signUpButton() {
     return InkWell(
       onTap: () {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => HomeViewPage()));
+            context, MaterialPageRoute(builder: (context) => HViewPage()));
       },
       child: Container(
         width: MediaQuery.of(context).size.width,
@@ -141,6 +173,41 @@ class _WelcomePageState extends State<WelcomePage> {
         ),
       ),
     );
+  }*/
+
+  Widget _signUpButton() {
+    return Container(
+      height: 50.0,
+      margin: EdgeInsets.all(10),
+      child: RaisedButton(
+        onPressed: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => HomeOfferPage()));
+        },
+        elevation: 30.0,
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(80.0)),
+        padding: EdgeInsets.all(0.0),
+        child: Ink(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.white, Color(0xC71585)],
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+              ),
+              borderRadius: BorderRadius.circular(30.0)),
+          child: Container(
+            constraints: BoxConstraints(maxWidth: 250.0, minHeight: 50.0),
+            alignment: Alignment.center,
+            child: Text(
+              "Ver Servicios",
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.black, fontSize: 20),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _title() {
@@ -159,11 +226,42 @@ class _WelcomePageState extends State<WelcomePage> {
               text: 'Téc',
               style: TextStyle(color: Colors.black, fontSize: 60),
             ),
-            /*TextSpan(
-              text: 'Técnico',
-              style: TextStyle(color: Colors.white, fontSize: 60),
-            ),*/
           ]),
+    );
+  }
+
+  Widget _logoutButton() {
+    return Container(
+      height: 30.0,
+      margin: EdgeInsets.all(10),
+      child: RaisedButton(
+        onPressed: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => HViewPage()));
+        },
+        elevation: 30.0,
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(80.0)),
+        padding: EdgeInsets.all(0.0),
+        child: Ink(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.transparent, Colors.transparent],
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+              ),
+              borderRadius: BorderRadius.circular(30.0)),
+          child: Container(
+            constraints: BoxConstraints(maxWidth: 150.0, minHeight: 50.0),
+            alignment: Alignment.center,
+            child: Text(
+              "Cerrar Sesión",
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.black, fontSize: 15),
+            ),
+          ),
+        ),
+      ),
     );
   }
 
@@ -177,14 +275,6 @@ class _WelcomePageState extends State<WelcomePage> {
           padding: EdgeInsets.symmetric(horizontal: 80),
           height: MediaQuery.of(context).size.height,
           decoration: BoxDecoration(
-              //borderRadius: BorderRadius.all(Radius.circular(5)),
-              /*boxShadow: <BoxShadow>[
-                BoxShadow(
-                    color: Colors.grey.shade200,
-                    offset: Offset(2, 4),
-                    blurRadius: 5,
-                    spreadRadius: 2)
-              ],*/
               gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
@@ -216,7 +306,7 @@ class _WelcomePageState extends State<WelcomePage> {
               SizedBox(
                 height: 20,
               ),
-              //_label()
+              //_logoutButton(),
             ],
           ),
         ),

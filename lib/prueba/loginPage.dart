@@ -30,8 +30,8 @@ class _LoginPageState extends State<LoginPage> {
         await http.post("http://192.168.0.20:8000/api/login", body: data);
     if (response.statusCode == 200) {
       jsonResponse = json.decode(response.body);
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
+      //print('Response status: ${response.statusCode}');
+      //print('Response body: ${response.body}');
       if (jsonResponse != null) {
         setState(() {
           _isLoading = false;
