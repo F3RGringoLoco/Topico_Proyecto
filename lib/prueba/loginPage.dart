@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+//import 'package:servtecnico/prueba/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -19,6 +20,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
 
   signIn(String email, pass) async {
@@ -30,8 +32,8 @@ class _LoginPageState extends State<LoginPage> {
         await http.post("http://192.168.0.20:8000/api/login", body: data);
     if (response.statusCode == 200) {
       jsonResponse = json.decode(response.body);
-      //print('Response status: ${response.statusCode}');
-      //print('Response body: ${response.body}');
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
       if (jsonResponse != null) {
         setState(() {
           _isLoading = false;
@@ -75,14 +77,18 @@ class _LoginPageState extends State<LoginPage> {
       height: 50.0,
       margin: EdgeInsets.all(10),
       child: RaisedButton(
-        onPressed: emailController.text == "" || passwordController.text == ""
-            ? null
-            : () {
-                setState(() {
-                  _isLoading = true;
-                });
-                signIn(emailController.text, passwordController.text);
-              },
+        onPressed: () {
+          if (_formKey.currentState.validate()) {
+            if (emailController.text == "" || passwordController.text == "") {
+              return null;
+            } else {
+              setState(() {
+                _isLoading = true;
+              });
+              signIn(emailController.text, passwordController.text);
+            }
+          }
+        },
         elevation: 30.0,
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(80.0)),
@@ -251,40 +257,66 @@ class _LoginPageState extends State<LoginPage> {
 
   Container _emailPassSection() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
-      child: Column(
-        children: <Widget>[
-          TextFormField(
-            keyboardType: TextInputType.emailAddress,
-            controller: emailController,
-            cursorColor: Colors.black,
-            style: TextStyle(color: Colors.black),
-            decoration: InputDecoration(
-              icon: Icon(Icons.email, color: Colors.black),
-              hintText: "Email",
-              border: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.black)),
-              hintStyle: TextStyle(color: Colors.black),
-            ),
+        padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: <Widget>[
+              TextFormField(
+                keyboardType: TextInputType.emailAddress,
+                controller: emailController,
+                cursorColor: Colors.black,
+                style: TextStyle(color: Colors.black),
+                decoration: InputDecoration(
+                  icon: Icon(Icons.email, color: Colors.black),
+                  hintText: "Email",
+                  border: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black)),
+                  hintStyle: TextStyle(color: Colors.black),
+                ),
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Campo Correo Electrónico no puede ser vacia';
+                  } else {
+                    /*bool isValidEmail() {
+                    return RegExp(
+                            r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+                        .hasMatch(value);
+                  */
+                    String p =
+                        r'^.+@[a-zA-Z]+\.{1}[a-zA-Z]+(\.{0,1}[a-zA-Z]+)$';
+                    RegExp regExp = new RegExp(p);
+                    if (!regExp.hasMatch(value)) {
+                      return 'Correo Electrónico incorrecto';
+                    }
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 30.0),
+              TextFormField(
+                keyboardType: TextInputType.visiblePassword,
+                controller: passwordController,
+                cursorColor: Colors.black,
+                obscureText: true,
+                style: TextStyle(color: Colors.black),
+                decoration: InputDecoration(
+                  icon: Icon(Icons.lock, color: Colors.black),
+                  hintText: "Contraseña",
+                  border: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.black)),
+                  hintStyle: TextStyle(color: Colors.black),
+                ),
+                validator: (value) {
+                  if (value.isEmpty) {
+                    return 'Campo Contraseña no puede ser vacia';
+                  }
+                  return null;
+                },
+              ),
+            ],
           ),
-          SizedBox(height: 30.0),
-          TextFormField(
-            keyboardType: TextInputType.visiblePassword,
-            controller: passwordController,
-            cursorColor: Colors.black,
-            obscureText: true,
-            style: TextStyle(color: Colors.black),
-            decoration: InputDecoration(
-              icon: Icon(Icons.lock, color: Colors.black),
-              hintText: "Contraseña",
-              border: UnderlineInputBorder(
-                  borderSide: BorderSide(color: Colors.black)),
-              hintStyle: TextStyle(color: Colors.black),
-            ),
-          ),
-        ],
-      ),
-    );
+        ));
   }
 
   @override

@@ -3,22 +3,15 @@ import 'package:weekday_selector/weekday_selector.dart';
 import 'package:intl/date_symbols.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-//import 'package:servtecnico/controllers/timeServ.dart';
-//import 'package:servtecnico/pages/work/detailwork.dart';
-//import 'package:servtecnico/prueba/homeView.dart';
-//import 'package:servtecnico/prueba/inputChips.dart';
 import 'package:servtecnico/controllers/servSelected.dart';
 import 'package:servtecnico/controllers/timeServDatabase.dart';
 import 'package:servtecnico/prueba/homeView.dart';
 
 String daysValue;
-TimeOfDay inicio;
-TimeOfDay fin;
+TimeOfDay inicio = TimeOfDay(hour: 7, minute: 15);
+TimeOfDay fin = TimeOfDay(hour: 7, minute: 15);
 
 class TimeServPage extends StatefulWidget {
-  //List servicios;
-  //TimeServPage({this.servicios});
-
   @override
   _TimeServPageState createState() => _TimeServPageState();
 }

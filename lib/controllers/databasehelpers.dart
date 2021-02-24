@@ -296,4 +296,19 @@ class DataBaseHelper {
 
     return json.decode(response.body);
   }
+
+  //get User info
+  Future<Map<String, dynamic>> getJsonData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final key = 'token';
+    final value = prefs.get(key) ?? 0;
+
+    String myUrl = "http://192.168.0.20:8000/api/getauthuser";
+    http.Response response = await http.get(myUrl, headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $value'
+    });
+    return json.decode(response.body)['getUser'];
+    //return "Success";
+  }
 }

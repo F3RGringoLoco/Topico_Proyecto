@@ -1,20 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 
 import 'package:servtecnico/prueba/loginPage.dart';
 import 'package:servtecnico/controllers/databasehelpers.dart';
-
-/*class ServPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: HomeOfferPage(),
-    );
-  }
-}*/
 
 class HomeOfferPage extends StatefulWidget {
   @override
@@ -30,7 +19,8 @@ class _HomeOfferPageState extends State<HomeOfferPage> {
   void initState() {
     super.initState();
     //this.checkInfoStatus();
-    this.getJsonData();
+    //this.getJsonData();
+    this.getUserInfo();
   }
 
   /*checkInfoStatus() async {
@@ -42,25 +32,14 @@ class _HomeOfferPageState extends State<HomeOfferPage> {
     }
   }*/
 
+  getUserInfo() async {
+    data = await databaseHelper.getJsonData();
+  }
+
   clearSharedPref() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
     await prefs.commit();
-  }
-
-  Future<String> getJsonData() async {
-    final prefs = await SharedPreferences.getInstance();
-    final key = 'token';
-    final value = prefs.get(key) ?? 0;
-
-    String myUrl = "http://192.168.0.20:8000/api/getauthuser";
-    http.Response response = await http.get(myUrl, headers: {
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $value'
-    });
-    data = json.decode(response.body)['user'];
-
-    return "Success";
   }
 
   @override
@@ -71,9 +50,9 @@ class _HomeOfferPageState extends State<HomeOfferPage> {
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-                colors: [Colors.black, Colors.purple],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter),
+                colors: [Colors.indigo, Colors.purple],
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight),
           ),
         ),
         actions: <Widget>[
@@ -118,28 +97,30 @@ class _HomeOfferPageState extends State<HomeOfferPage> {
         child: new ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            new UserAccountsDrawerHeader(
-              accountName: FutureBuilder<String>(
-                  future: getJsonData(),
-                  builder: (context, snapshot) {
-                    return snapshot.hasData
-                        ? new Text("Bienvenido " + data["name"].toString())
-                        : new Center(
-                            child: new LinearProgressIndicator(),
-                          );
-                  }),
-              accountEmail: FutureBuilder<String>(
-                  future: getJsonData(),
-                  builder: (context, snapshot) {
-                    return snapshot.hasData
-                        ? new Text(data["email"].toString())
-                        : new Center(
-                            child: new LinearProgressIndicator(),
-                          );
-                  }),
-              currentAccountPicture: FlutterLogo(),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(colors: [Colors.black, Colors.purple]),
+            new Container(
+              child: FutureBuilder<Map<String, dynamic>>(
+                future: databaseHelper.getJsonData(),
+                builder: (context, snapshot) {
+                  return snapshot.hasData
+                      ? new UserAccountsDrawerHeader(
+                          accountName:
+                              new Text("Bienvenido " + data["name"].toString()),
+                          accountEmail: new Text(data["email"].toString()),
+                          currentAccountPicture: CircleAvatar(
+                            radius: 15.0,
+                            backgroundImage:
+                                NetworkImage(data["cover_image"].toString()),
+                          ),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [Colors.indigo, Colors.purple],
+                            ),
+                          ),
+                        )
+                      : new Center(
+                          child: new LinearProgressIndicator(),
+                        );
+                },
               ),
             ),
             //
@@ -167,7 +148,7 @@ class ItemList extends StatelessWidget {
       itemCount: list == null ? 0 : list.length,
       itemBuilder: (context, i) {
         return new Container(
-          padding: const EdgeInsets.all(10.0),
+          padding: const EdgeInsets.all(1.0),
           child: new GestureDetector(
             /*onTap: () => Navigator.of(context).push(
               new MaterialPageRoute(
@@ -177,6 +158,59 @@ class ItemList extends StatelessWidget {
                       )),
             ),*/
             child: new Card(
+              elevation: 10,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
+              clipBehavior: Clip.antiAlias,
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 20,
+                  ),
+                  ListTile(
+                    leading: CircleAvatar(
+                      radius: 70,
+                      backgroundColor: Colors.white12,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(50),
+                        child: Image(
+                          image:
+                              NetworkImage(list[i]['cover_image'].toString()),
+                          height: 80,
+                          width: 80,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    title: Text(list[i]['name'].toString(),
+                        style: new TextStyle(
+                            fontSize: 20.0, fontWeight: FontWeight.bold)),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: new ListTile(
+                      subtitle: new Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            new Text(
+                                'Telefono: ${list[i]['number'].toString()}',
+                                style: new TextStyle(
+                                    fontSize: 15.0,
+                                    fontWeight: FontWeight.normal)),
+                            new Text(
+                                'Ubicación: ${list[i]['location'].toString()}',
+                                style: new TextStyle(
+                                    fontSize: 15.0,
+                                    fontWeight: FontWeight.normal)),
+                          ]),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            /*new Card(
               elevation: 5,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30)),
@@ -215,7 +249,7 @@ class ItemList extends StatelessWidget {
                   ),
                 ],
               ),
-            ),
+            ),*/
           ),
         );
       },

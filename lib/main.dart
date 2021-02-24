@@ -19,9 +19,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  //final GlobalKey<NavigatorState> navigatorKey =
-  // new GlobalKey<NavigatorState>();
-
   @override
   void initState() {
     super.initState();

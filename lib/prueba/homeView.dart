@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 
@@ -38,21 +36,26 @@ class _HomeViewPageState extends State<HomeViewPage> {
   void initState() {
     super.initState();
     this.checkInfoStatus();
-    this.getJsonData();
+    //this.getJsonData();
+    this.getUserInfo();
+  }
+
+  getUserInfo() async {
+    data = await databaseHelper.getJsonData();
   }
 
   checkInfoStatus() async {
     serv = await saveServ.hasService();
     //print(serv);
     if (serv['hasServ'] == null) {
-      Navigator.of(context).pushAndRemoveUntil(
+      return Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (BuildContext context) => InputChipPage()),
           (Route<dynamic> route) => false);
     }
     schedule = await saveTime.hasSchedule();
     //print(schedule);
     if (schedule['hasSched'] == false) {
-      Navigator.of(context).pushAndRemoveUntil(
+      return Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (BuildContext context) => TimeServPage()),
           (Route<dynamic> route) => false);
     }
@@ -62,21 +65,6 @@ class _HomeViewPageState extends State<HomeViewPage> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
     await prefs.commit();
-  }
-
-  Future<String> getJsonData() async {
-    final prefs = await SharedPreferences.getInstance();
-    final key = 'token';
-    final value = prefs.get(key) ?? 0;
-
-    String myUrl = "http://192.168.0.20:8000/api/getauthuser";
-    http.Response response = await http.get(myUrl, headers: {
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $value'
-    });
-    data = json.decode(response.body)['user'];
-
-    return "Success";
   }
 
   @override
@@ -134,30 +122,30 @@ class _HomeViewPageState extends State<HomeViewPage> {
         child: new ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            new UserAccountsDrawerHeader(
-              accountName: FutureBuilder<String>(
-                  future: getJsonData(),
-                  builder: (context, snapshot) {
-                    return snapshot.hasData
-                        ? new Text("Bienvenido " + data["name"].toString())
-                        : new Center(
-                            child: new LinearProgressIndicator(),
-                          );
-                  }),
-              accountEmail: FutureBuilder<String>(
-                  future: getJsonData(),
-                  builder: (context, snapshot) {
-                    return snapshot.hasData
-                        ? new Text(data["email"].toString())
-                        : new Center(
-                            child: new LinearProgressIndicator(),
-                          );
-                  }),
-              currentAccountPicture: FlutterLogo(),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Colors.indigo, Colors.purple],
-                ),
+            new Container(
+              child: FutureBuilder<Map<String, dynamic>>(
+                future: databaseHelper.getJsonData(),
+                builder: (context, snapshot) {
+                  return snapshot.hasData
+                      ? new UserAccountsDrawerHeader(
+                          accountName:
+                              new Text("Bienvenido " + data["name"].toString()),
+                          accountEmail: new Text(data["email"].toString()),
+                          currentAccountPicture: CircleAvatar(
+                            radius: 10.0,
+                            backgroundImage:
+                                NetworkImage(data["cover_image"].toString()),
+                          ),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [Colors.indigo, Colors.purple],
+                            ),
+                          ),
+                        )
+                      : new Center(
+                          child: new LinearProgressIndicator(),
+                        );
+                },
               ),
             ),
             //
@@ -185,7 +173,7 @@ class ItemList extends StatelessWidget {
       itemCount: list == null ? 0 : list.length,
       itemBuilder: (context, i) {
         return new Container(
-          padding: const EdgeInsets.all(10.0),
+          padding: const EdgeInsets.all(1.0),
           child: new GestureDetector(
             /*onTap: () => Navigator.of(context).push(
               new MaterialPageRoute(
@@ -195,21 +183,33 @@ class ItemList extends StatelessWidget {
                       )),
             ),*/
             child: new Card(
-              elevation: 5,
+              elevation: 10,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30)),
+                  borderRadius: BorderRadius.circular(20)),
               clipBehavior: Clip.antiAlias,
               child: Column(
                 children: [
+                  SizedBox(
+                    height: 20,
+                  ),
                   ListTile(
-                    leading: Icon(Icons.check),
+                    leading: CircleAvatar(
+                      radius: 70,
+                      backgroundColor: Colors.white12,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(50),
+                        child: Image(
+                          image:
+                              NetworkImage(list[i]['cover_image'].toString()),
+                          height: 80,
+                          width: 80,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
                     title: Text(list[i]['name'].toString(),
                         style: new TextStyle(
                             fontSize: 20.0, fontWeight: FontWeight.bold)),
-                  ),
-                  Image(
-                    image: NetworkImage(list[i]['cover_image'].toString()),
-                    height: 200,
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
