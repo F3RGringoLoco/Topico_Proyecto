@@ -51,6 +51,7 @@ class _WelcomePageState extends State<WelcomePage> {
     final value = prefs.get(key) ?? 0;
 
     String myUrl = "http://192.168.0.20:8000/api/nameUser";
+    //String myUrl = "http://servtecnico.000webhostapp.com/api/nameUser";
     http.Response response = await http.get(myUrl, headers: {
       'Accept': 'application/json',
       'Authorization': 'Bearer $value'

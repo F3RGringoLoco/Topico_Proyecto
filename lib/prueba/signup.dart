@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -22,11 +23,23 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   final _formKey = GlobalKey<FormState>();
+  FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  String save_FCM_token = "";
   bool _isLoading = false;
   File _image;
   final picker = ImagePicker();
   var myFormat = DateFormat('d-MM-yyyy');
   var formattedDate;
+
+  @override
+  void initState() {
+    super.initState();
+    _firebaseMessaging.requestNotificationPermissions();
+
+    _firebaseMessaging.getToken().then((token) {
+      save_FCM_token = token.toString();
+    });
+  }
 
   Future getImage() async {
     final pickedFile = await picker.getImage(
@@ -61,7 +74,7 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   signIn(String name, String date, number, String location, String email, pass,
-      String image) async {
+      String image, String token) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     Map data = {
       'name': name,
@@ -71,11 +84,14 @@ class _SignUpPageState extends State<SignUpPage> {
       'email': email,
       'password': pass,
       'image': image,
+      'fcm_token': token,
     };
     var jsonResponse = null;
 
-    var response =
-        await http.post("http://192.168.0.20:8000/api/register", body: data);
+    var response = await http
+        //.post("http://servtecnico.000webhostapp.com/api/register", body: data);
+        .post("http://192.168.0.20:8000/api/register", body: data);
+
     if (response.statusCode == 200) {
       jsonResponse = json.decode(response.body);
       print('Response status: ${response.statusCode}');
@@ -284,13 +300,13 @@ class _SignUpPageState extends State<SignUpPage> {
                 hintStyle: TextStyle(color: Colors.black),
               ),
               onTap: () async {
-                DateTime date = DateTime(1900);
+                DateTime date = DateTime(1921);
                 FocusScope.of(context).requestFocus(new FocusNode());
 
                 date = await showDatePicker(
                     context: context,
                     initialDate: DateTime(2002),
-                    firstDate: DateTime(1900),
+                    firstDate: DateTime(1921),
                     lastDate: DateTime(2003));
 
                 //dateCtl.text = date.toString();
@@ -464,7 +480,8 @@ class _SignUpPageState extends State<SignUpPage> {
                   locationController.text,
                   emailController.text,
                   passwordController.text,
-                  base64Image);
+                  base64Image,
+                  save_FCM_token);
             }
           }
         },

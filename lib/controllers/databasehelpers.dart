@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class DataBaseHelper {
   String serverUrl = "http://192.168.0.20:8000/api";
   String serverUrlWork = "http://192.168.0.20:8000/api/work";
+  //String serverUrl = "http://servtecnico.000webhostapp.com/api";
   var status;
 
   var token;
@@ -303,7 +304,7 @@ class DataBaseHelper {
     final key = 'token';
     final value = prefs.get(key) ?? 0;
 
-    String myUrl = "http://192.168.0.20:8000/api/getauthuser";
+    String myUrl = "$serverUrl/getauthuser";
     http.Response response = await http.get(myUrl, headers: {
       'Accept': 'application/json',
       'Authorization': 'Bearer $value'
