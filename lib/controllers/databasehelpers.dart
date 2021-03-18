@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DataBaseHelper {
-  String serverUrl = "http://192.168.0.20:8000/api";
-  String serverUrlWork = "http://192.168.0.20:8000/api/work";
+  String serverUrl = "http://192.168.0.18:8000/api";
+  String serverUrlWork = "http://192.168.0.18:8000/api/work";
   //String serverUrl = "http://servtecnico.000webhostapp.com/api";
   var status;
 
@@ -283,21 +283,6 @@ class DataBaseHelper {
     return json.decode(response.body)['user'];
   }
 
-  //Get List of techs with images
-  Future<List> getTechsWithImage() async {
-    final prefs = await SharedPreferences.getInstance();
-    final key = 'token';
-    final value = prefs.get(key) ?? 0;
-
-    String myUrl = "$serverUrl/techs";
-    http.Response response = await http.get(myUrl, headers: {
-      'Accept': 'application/json',
-      'Authorization': 'Bearer $value'
-    });
-
-    return json.decode(response.body);
-  }
-
   //get User info
   Future<Map<String, dynamic>> getJsonData() async {
     final prefs = await SharedPreferences.getInstance();
@@ -311,5 +296,18 @@ class DataBaseHelper {
     });
     return json.decode(response.body)['getUser'];
     //return "Success";
+  }
+
+  Future<Map<String, dynamic>> isAllowed() async {
+    final prefs = await SharedPreferences.getInstance();
+    final key = 'token';
+    final value = prefs.get(key) ?? 0;
+
+    String myUrl = "$serverUrl/isaccepted";
+    http.Response response = await http.get(myUrl, headers: {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $value'
+    });
+    return json.decode(response.body);
   }
 }

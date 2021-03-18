@@ -230,6 +230,33 @@ class ItemList extends StatelessWidget {
                     children: <Widget>[
                       FlatButton(
                         onPressed: () {
+                          servTime
+                              .deleteSchedules(list[index]['id'].toString());
+                          Navigator.pushReplacement(
+                              context,
+                              PageRouteBuilder(
+                                pageBuilder: (a, b, c) => TimeServPage(),
+                                transitionDuration: Duration(seconds: 0),
+                              ));
+                          return Future.value(false);
+                        },
+                        child: RichText(
+                          text: TextSpan(children: [
+                            WidgetSpan(
+                                child: Icon(
+                              Icons.delete_forever,
+                              color: Colors.red,
+                              size: 17.5,
+                            )),
+                            TextSpan(
+                                text: 'Eliminar Horarios',
+                                style:
+                                    TextStyle(color: Colors.red, fontSize: 15)),
+                          ]),
+                        ),
+                      ),
+                      FlatButton(
+                        onPressed: () {
                           showDialog<void>(
                               context: context,
                               //barrierDismissible: false,

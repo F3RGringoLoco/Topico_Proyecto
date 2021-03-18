@@ -90,7 +90,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
     var response = await http
         //.post("http://servtecnico.000webhostapp.com/api/register", body: data);
-        .post("http://192.168.0.20:8000/api/register", body: data);
+        .post("http://192.168.0.18:8000/api/register", body: data);
 
     if (response.statusCode == 200) {
       jsonResponse = json.decode(response.body);

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SaveServDatabaseHelper {
-  String serverUrl = "http://192.168.0.20:8000/api";
+  String serverUrl = "http://192.168.0.18:8000/api";
   //String serverUrl = "http://servtecnico.000webhostapp.com/api";
   var status;
   var token;
